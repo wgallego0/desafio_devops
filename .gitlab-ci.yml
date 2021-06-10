@@ -1,4 +1,4 @@
-tester_stage:
+test:
   stage: tester
   image: ubuntu:latest
   environment: Staging
