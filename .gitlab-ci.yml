@@ -6,12 +6,13 @@ stages:
 Teste_api:
   stage: test
   script:
-    - echo "Iniciando Stage 1 Testing:"
     - cp -R * /tmp
     - ls -ltr /tmp
     - chmod +x tester1.sh && chmod 777 tester1.sh && chmod +x tester2.sh && chmod 777 tester2.sh
     - apt-get update -qq && apt-get install -y -qq curl && apt-get install sshpass -y 
     - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p34722 root@192.168.1.114 "/var/www/html/desafio_devops/app/start_api.sh &"
+    - sleep 3
+    - echo "Iniciando Stage 1 Testing:"
     - ./tester1.sh
     - echo "Iniciando Stage 2 Testing:"
     - ./tester2.sh
@@ -21,5 +22,7 @@ job_deploy:
   stage: staging
   needs: ["Teste_api"]
   script:
-    - apt-get update -y && apt-get install sshpass -y
-    - sshpass -p Acqwp2012 scp -o StrictHostKeyChecking=no -p34722 * /app
+    - apt-get update -y && apt-get install sshpass -y && apt-get install python -y && apt-get install pip
+    - sshpass -p Acqwp2012 scp -o StrictHostKeyChecking=no -P 34722 * /app
+    - cd /app && install -r requeriments.txt && gunicorn -b 0.0.0.0:8000 api:app --daemon
+
