@@ -4,6 +4,10 @@ stages:
 
 test:
   stage: test
+  except:
+    - master
+  only:
+    - homolog
   script:
     - apt-get update -qq && apt-get install -y -qq curl && apt-get install sshpass -y && apt-get install wget -y
     - cp -Rf /builds/root/desafio_devops/.git/ /tmp
