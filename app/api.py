@@ -33,7 +33,7 @@ def api_comment_new():
             'status': 'SUCCESS',
             'message': message,
             }
-    #return jsonify(response)
+    return jsonify(response)
 
 
 @app.route('/api/comment/list/<content_id>')
