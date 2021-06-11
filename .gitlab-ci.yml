@@ -6,17 +6,15 @@ stages:
 Teste_api:
   stage: test
   script:
-    - echo "Iniciando Stage Testing:"
+    - echo "Iniciando Stage 1 Testing:"
     - cp -R * /tmp
     - ls -ltr /tmp
-    - chmod +x tester1.sh && chmod 777 tester1.sh
+    - chmod +x tester1.sh && chmod 777 tester1.sh && chmod +x tester2.sh && chmod 777 tester2.sh
     - apt-get update -qq && apt-get install -y -qq curl && apt-get install sshpass -y 
     - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p34722 root@192.168.1.114 "/var/www/html/desafio_devops/app/start_api.sh &"
-    - ./tester2.sh
-    - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p34722 root@192.168.1.114 "pkill gunicor"
-    - echo "Iniciando Stage Testing:"
-    - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p34722 root@192.168.1.114 "/var/www/html/desafio_devops/app/start_api.sh &"
     - ./tester1.sh
+    - echo "Iniciando Stage 2 Testing:"
+    - ./tester2.sh
     - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p34722 root@192.168.1.114 "pkill gunicor"
 
 job_deploy:
