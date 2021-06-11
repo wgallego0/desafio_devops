@@ -1,7 +1,9 @@
 image: ubuntu:latest
 stages:
   - test
-  - staging
+  - build
+  - stage
+
 
 Teste_api:
   stage: test
@@ -19,7 +21,7 @@ Teste_api:
     - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p34722 root@192.168.1.114 "pkill gunicor"
 
 job_deploy:
-  stage: staging
+  stage: build
   needs: ["Teste_api"]
   script:
     - apt-get update -y && apt-get install sshpass -y
@@ -27,3 +29,19 @@ job_deploy:
     - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p35722 root@192.168.1.114 "apt-get install gunicorn -y && pip install -r /app/requirements.txt"
     - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p35722 root@192.168.1.114 "/app/start_api.sh &"
 
+teste_api_prod:
+  stage: stage
+  needs: ["job_deploy"]
+  script:
+    - cp -R * /tmp
+    - ls -ltr /tmp
+    - chmod +x tester1_prod.sh && chmod 777 tester1_prod.sh && chmod +x tester2_prod.sh && chmod 777 tester2_prod.sh
+    - apt-get update -qq && apt-get install -y -qq curl && apt-get install sshpass -y 
+    - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p35722 root@192.168.1.114 "/app/start_api.sh &"
+    - sleep 3
+    - echo "Iniciando Stage 1 Testing:"
+    - ./tester1_prod.sh
+    - echo "Iniciando Stage 2 Testing:"
+    - ./tester2_prod.sh
+    - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p35722 root@192.168.1.114 "pkill gunicor"
+    - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p35722 root@192.168.1.114 "/app/start_api.sh &"
