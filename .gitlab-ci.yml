@@ -4,8 +4,6 @@ stages:
 
 test:
   stage: test
-  except:
-    - master
   environment: Staging
   before_script:
     - apt-get update -qq && apt-get install -y -qq curl && apt-get install sshpass -y && apt-get install wget -y
