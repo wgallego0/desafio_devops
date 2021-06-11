@@ -6,6 +6,10 @@ stages:
 
 Teste_api:
   stage: test
+  only:
+    - homolog
+  except:
+    - master
   script:
     - echo "Iniciando Stage Testing:"
     - cp -R * /tmp
@@ -19,6 +23,10 @@ Teste_api:
 
 job_deploy:
   stage: staging
+  except:
+    - homolog
+  only:
+    - master
   needs: ["Teste_api"]
   script:
     - apt-get update -y && apt-get install sshpass -y
