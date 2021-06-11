@@ -7,11 +7,13 @@
         * Git
         * Curl
         * Python
+	* pip
 * Container Ubuntu 20.04 ( Production deploy 2 )
     * FrameWorks utilizados:
         * Git
         * Curl
         * Python
+	* pip
 
 # Máquinas Containers
 > * **Homolog_devops**
@@ -74,10 +76,33 @@
 
     * Deploy 
         * Realiza o deploy para a máquina de produção se stage de teste bem sucedido, e inicia a API.
+	```
+	job_deploy:
+    	stage: build
+    	needs: ["Teste_api"]
+    	script:
+       		- apt-get update -y && apt-get install sshpass -y
+	        - sshpass -p Acqwp2012 scp -o stricthostkeychecking=no -P 35722 -r * root@192.168.1.114:/
+        	- sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p35722 root@192.168.1.114 "apt-get install gunicorn -y && pip install -r /app/requirements.txt"
+	        - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p35722 root@192.168.1.114 "/app/start_api.sh &"
+	```
 
     * Teste "Pós Deploy"
         * Realiza um 2º teste, agora em produção, para saber se o deploy foi bem sucedido e se a API inicia sem problemas,
             * Inicia a API, executa os testes 1 e 2, ( em cada lista ), mata a execução da api, para limpar os registros dos testes e sobe novamente a API para produção
+ 	```
+	    job_deploy:
+	    stage: build
+	    needs: ["Teste_api"]
+	    script:
+	        - apt-get update -y && apt-get install sshpass -y
+	        - sshpass -p Acqwp2012 scp -o stricthostkeychecking=no -P 35722 -r * root@192.168.1.114:/
+	        - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p35722 root@192.168.1.114 "apt-get install gunicorn -y && pip install -r /app/requirements.txt"
+        	- sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p35722 root@192.168.1.114 "/app/start_api.sh &"
+
+	    teste_api_prod:
+	    stage: stage
+	```
 
 # Gitlab-ci.yml
     ```
