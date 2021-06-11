@@ -22,7 +22,7 @@ job_deploy:
   stage: staging
   needs: ["Teste_api"]
   script:
-    - apt-get update -y && apt-get install sshpass -y && apt-get install python -y && apt-get install pip -y
-    - sshpass -p Acqwp2012 scp -o StrictHostKeyChecking=no -P 34722 * /app
+    - apt-get update -y && apt-get install sshpass -y
+    - sshpass -p Acqwp2012 scp -o StrictHostKeyChecking=no -P 34722 -r * /app/
     - cd /app && install -r requeriments.txt && gunicorn -b 0.0.0.0:8000 api:app --daemon
 
