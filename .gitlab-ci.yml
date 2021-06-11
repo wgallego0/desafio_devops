@@ -12,6 +12,6 @@ test:
     - echo "Iniciando Stage Testing:"
     - apt-get update -qq && apt-get install -y -qq curl && apt-get install sshpass -y 
     - cp -R * /tmp
-    - sshpass -p Acqwp2012 ssh -p34722 root@25.1.14.127 "/var/www/html/desafio_devops/app/start_api.sh &"
+    - sshpass -p Acqwp2012 ssh -p34722 root@192.168.1.114 "/var/www/html/desafio_devops/app/start_api.sh &"
     - ./tmp/teste1.sh
     - pkill gunicor
