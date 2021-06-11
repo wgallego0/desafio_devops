@@ -35,13 +35,13 @@ teste_api_prod:
   script:
     - cp -R * /tmp
     - ls -ltr /tmp
-    - chmod +x tester1.sh && chmod 777 tester1.sh && chmod +x tester2.sh && chmod 777 tester2.sh
+    - chmod +x tester1_prod.sh && chmod 777 tester1_prod.sh && chmod +x tester2_prod.sh && chmod 777 tester2_prod.sh
     - apt-get update -qq && apt-get install -y -qq curl && apt-get install sshpass -y 
     - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p35722 root@192.168.1.114 "/app/start_api.sh &"
     - sleep 3
     - echo "Iniciando Stage 1 Testing:"
-    - ./tester1.sh
+    - ./tester1_prod.sh
     - echo "Iniciando Stage 2 Testing:"
-    - ./tester2.sh
+    - ./tester2_prod.sh
     - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p35722 root@192.168.1.114 "pkill gunicor"
     - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p35722 root@192.168.1.114 "/app/start_api.sh &"
