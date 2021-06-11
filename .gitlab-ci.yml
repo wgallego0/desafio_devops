@@ -7,9 +7,12 @@ test:
   except:
     - master
   environment: Staging
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq curl && apt-get install sshpass -y && apt-get install wget -y
+
   script:
-    - cp -r * /tmp
-    - apt-get update -qq && apt-get install -y -qq curl && apt-get install sshpass -y
+    - cd /tmp
+    - wget http://25.1.14.127:32080/root/desafio_devops/-/raw/homolog/tester1.sh?inline=false
     - sshpass -PAcqwp2012 ssh -p34722 root@localhost 'gunicorn -b 0.0.0.0:8000 --log-level debug api:app'
     - ./tmp/teste1.sh
     - pkill gunicor
