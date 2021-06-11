@@ -23,6 +23,6 @@ job_deploy:
   needs: ["Teste_api"]
   script:
     - apt-get update -y && apt-get install sshpass -y
-    - sshpass -p Acqwp2012 scp -o StrictHostKeyChecking=no -P 34722 -r * /app/
+    - sshpass -p Acqwp2012 scp -o stricthostkeychecking=no -P 35722 -r * root@192.168.1.114:/app/
     - cd /app && install -r requeriments.txt && gunicorn -b 0.0.0.0:8000 api:app --daemon
 
