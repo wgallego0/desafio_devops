@@ -23,6 +23,8 @@ Teste_api:
 
 job_deploy:
   stage: staging
+  needs: ["Teste_api"]
   script:
     - apt-get update -y && apt-get install sshpass -y
-    - sshpass -p Acqwp2012 scp -o StrictHostKeyChecking=no -p34722 * /app
+    - sshpass -p Acqwp2012 -o StrictHostKeyChecking=no scp -p 34722 * /app
+    - sshpass -p Acqwp2012 scp -o stricthostkeychecking=no -r * root@192.168.1.114:/app/
