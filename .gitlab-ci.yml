@@ -10,7 +10,7 @@ test:
     - homolog
   script:
     - apt-get update -qq && apt-get install -y -qq curl && apt-get install sshpass -y && apt-get install wget -y
-    - cp -Rf /builds/root/desafio_devops/.git/ /tmp
+    - cp -R * /tmp
     - sshpass -PAcqwp2012 ssh -p34722 root@localhost 'gunicorn -b 0.0.0.0:8000 --log-level debug api:app'
     - ./tmp/teste1.sh
     - pkill gunicor
