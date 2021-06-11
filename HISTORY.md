@@ -73,35 +73,61 @@
         ```
 
     * Deploy 
-        * Realiza o deploy para a máquina de produção se stage de teste bem sucedido.
+        * Realiza o deploy para a máquina de produção se stage de teste bem sucedido, e inicia a API.
+
+    * Teste "Pós Deploy"
+        * Realiza um 2º teste, agora em produção, para saber se o deploy foi bem sucedido e se a API inicia sem problemas,
+            * Inicia a API, executa os testes 1 e 2, ( em cada lista ), mata a execução da api, para limpar os registros dos testes e sobe novamente a API para produção
 
 # Gitlab-ci.yml
     ```
     image: ubuntu:latest
     stages:
-    - build
     - test
-    - staging
+    - build
+    - stage
+
 
     Teste_api:
     stage: test
     script:
-        - echo "Iniciando Stage Testing:"
         - cp -R * /tmp
         - ls -ltr /tmp
-        - chmod +x tester1.sh && chmod 777 tester1.sh
+        - chmod +x tester1.sh && chmod 777 tester1.sh && chmod +x tester2.sh && chmod 777 tester2.sh
         - apt-get update -qq && apt-get install -y -qq curl && apt-get install sshpass -y 
-        - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p34722 root@192.168.1.114 "/var/www/html/desafio_devops/app/start_api.sh &"
-        - ./tester2.sh
-        - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p34722 root@192.168.1.114 "pkill gunicor"
-        - echo "Iniciando Stage Testing:"
-        - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p34722 root@192.168.1.114 "/var/www/html/desafio_devops/app/start_api.sh &"
+        - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p34722 root@192.168.1.114 "/app/start_api.sh &"
+        - sleep 3
+        - echo "Iniciando Stage 1 Testing:"
         - ./tester1.sh
+        - echo "Iniciando Stage 2 Testing:"
+        - ./tester2.sh
         - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p34722 root@192.168.1.114 "pkill gunicor"
 
     job_deploy:
-    stage: staging
+    stage: build
+    needs: ["Teste_api"]
     script:
-        - sshpass -p Acqwp2012 scp -o StrictHostKeyChecking=no -p34722 * /app
+        - apt-get update -y && apt-get install sshpass -y
+        - sshpass -p Acqwp2012 scp -o stricthostkeychecking=no -P 35722 -r * root@192.168.1.114:/
+        - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p35722 root@192.168.1.114 "apt-get install gunicorn -y && pip install -r /app/requirements.txt"
+        - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p35722 root@192.168.1.114 "/app/start_api.sh &"
+
+    teste_api_prod:
+    stage: stage
+    needs: ["job_deploy"]
+    script:
+        - cp -R * /tmp
+        - ls -ltr /tmp
+        - chmod +x tester1_prod.sh && chmod 777 tester1_prod.sh && chmod +x tester2_prod.sh && chmod 777 tester2_prod.sh
+        - apt-get update -qq && apt-get install -y -qq curl && apt-get install sshpass -y 
+        - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p35722 root@192.168.1.114 "/app/start_api.sh &"
+        - sleep 3
+        - echo "Iniciando Stage 1 Testing:"
+        - ./tester1_prod.sh
+        - echo "Iniciando Stage 2 Testing:"
+        - ./tester2_prod.sh
+        - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p35722 root@192.168.1.114 "pkill gunicor"
+        - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p35722 root@192.168.1.114 "/app/start_api.sh &"
+
     ```
 
