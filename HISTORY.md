@@ -14,6 +14,36 @@
         * Python
 
 # Máquinas Containers
+> * **Homolog_devops**
+>     * ubuntu 20.04
+>     * ip: 172.17.0.4
+>     * Portas ( porta host apontada para container):
+>         * 34722:22  ( Porta SSH )
+>         * 34780:80  ( Porta Web )
+>         * 38000:8000 ( Porta Api )
+> 
+> * **Production_devops**
+>     * ubuntu 20.04
+>     * ip: 172.17.0.3
+>     * Portas ( porta host apontada para container):
+>         * 35722:22  ( Porta SSH )
+>         * 35780:80  ( Porta Web )
+>         * 38000:8000 ( Porta Api )        
+> 
+> * **Portainer**
+>     * Alpine
+>     * ip: 172.17.0.2
+>     * Portas ( porta host apontada para container):
+>         * 8000:8000 ( Portainer porta web )
+>         * 9000:9000 ( Portainer porta de serviço )
+> 
+> * **Gitlab**
+>     * Linux gitlab_ce 5.4.72-microsoft-standard-WSL2
+>     * ip: 172.17.0.5
+>     * Portas ( porta host apontada para container):
+>         * 22:22 ( Porta SSH )    
+>         * 443:443 ( Porta SSL)
+>         * 80:80  ( Porta web )
 
 
 # Etapas de automação
