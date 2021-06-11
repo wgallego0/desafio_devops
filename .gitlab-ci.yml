@@ -13,9 +13,8 @@ build:
     - chmod +x tester1.sh && chmod 777 tester1.sh
     - apt-get update -qq && apt-get install -y -qq curl && apt-get install sshpass -y 
 
-
 teste:
-  stage: test
+  stage: build
   except:
     - master
   only:
@@ -27,7 +26,7 @@ teste:
     - sshpass -p Acqwp2012 ssh -o StrictHostKeyChecking=no -p34722 root@192.168.1.114 "pkill gunicor"
 
 teste2:
-  stage: test
+  stage: build
   except:
     - master
   only:
